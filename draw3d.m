@@ -1,6 +1,8 @@
 classdef draw3d<matlab.mixin.SetGet
-    properties (Hidden,Access = draw3dACL)
-        patch_group=hggroup('Parent',gca);
+    
+    % draw3d base class
+    properties (Hidden,Access = {?line3d,?arrow3d,?arrowhead3d})
+        patch_group;
         patches=[];
     end
     
@@ -8,7 +10,7 @@ classdef draw3d<matlab.mixin.SetGet
         Color=lines(1);
         Alpha=1;
         Lighting='gouraud';
-        BackLighting='reverslit';
+        BackLighting='reverselit';
         CDataMapping='scaled';
         XData=[];
         YData=[];
@@ -20,36 +22,42 @@ classdef draw3d<matlab.mixin.SetGet
         Tag='';
     end
     
-    properties (SetAccess = immutable)
-        Children=[];
+    properties (SetAccess = protected)
+        Children={};
+        Parent=[];
     end
     
-    properties(SetAccess = immutable,Abstract = true)
-        Type;
+    properties (Dependent, SetAccess=immutable)
+     Type;
+    end
+    
+    properties(Access=protected)
+        type_store;
     end
     
     properties (Dependent)
         Visible;
         Clipping;
         Annotation;
-        Parent;
+        
         HandleVisibility;
     end
     
     methods
         
-        %constructor
         function obj=draw3d(X,Y,Z,varargin)
-            %parse options
-            set(obj,varargin{:});
-            obj.XData=X;
-            obj.YData=Y;
-            obj.ZData=Z;
-            obj.draw=true;
+            obj.patch_group=hggroup('Parent',gca,'UserData',obj);
+            set(obj.patch_group,'DeleteFcn',@obj.delete_callback);
+            if nargin>0
+               obj.XData=X;
+               obj.YData=Y;
+               obj.ZData=Z;
+               set(obj,varargin{:});
+            end
         end
         
-        function delete(obj)
-            delete(obj.patch_group);
+        function type=get.Type(obj)
+            type=obj.type_store;
         end
         
         function set.draw(obj,value)
@@ -58,7 +66,7 @@ classdef draw3d<matlab.mixin.SetGet
                 obj.redraw;
             end
         end
-        
+                
         function set.Color(obj,color)
             obj.Color=color;
             obj.update_patches('FaceColor',color);
@@ -86,17 +94,22 @@ classdef draw3d<matlab.mixin.SetGet
         
         function set.XData(obj,xdata)
             obj.XData=xdata;
-            obj.redraw;
+                obj.redraw;
         end
         
         function set.YData(obj,ydata)
             obj.YData=ydata;
-            obj.redraw;
+                obj.redraw;
         end
         
         function set.ZData(obj,zdata)
             obj.ZData=zdata;
-            obj.redraw;
+                obj.redraw;
+        end
+        
+        function set.Parent(obj,parent)
+            obj.Parent=parent;
+            obj.add_parent(parent);
         end
         
         function set.Visible(obj,visible)
@@ -123,14 +136,6 @@ classdef draw3d<matlab.mixin.SetGet
             annotation=get(obj.patch_group,'Annotation');
         end
         
-        function set.Parent(obj,parent)
-            set(obj.patch_group,'Parent',parent);
-        end
-        
-        function parent=get.Parent(obj)
-            parent=get(obj.patch_group,'Parent');
-        end
-        
         function set.HandleVisibility(obj,visibility)
             set(obj.patch_group,'HandleVisibility',visibility);
         end
@@ -143,13 +148,35 @@ classdef draw3d<matlab.mixin.SetGet
     methods (Access=protected)
         function update_patches(obj,property,value)
             if obj.draw
-                set(obj.line_patches,property,value);
+                set(obj.patches,property,value);
+                for i=1:length(obj.Children)
+                    obj.Children{i}.update_patches(property,value);
+                end
             end
         end
-    end
-    
-    methods (Access=protected, Abstract=true)
-        redraw(obj)
+        
+        function add_parent(obj,parent)
+            set(obj.patch_group,'Parent',parent.patch_group);
+        end
+        
+        function add_child(obj,child)
+            obj.Children{end+1}=child;
+            child.Parent=obj;
+        end
+        
+        function delete_callback(obj,~,~)
+            obj.delete();
+        end
+        
+        function comp=draw_now(obj)
+            comp=obj.draw&&~(isempty(obj.XData)||isempty(obj.YData)||isempty(obj.ZData));
+        end
+
+        function redraw(obj)
+            if obj.draw_now
+                % draw object (always check for draw_now)
+            end
+        end
     end
 end
         

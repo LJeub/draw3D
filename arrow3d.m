@@ -1,42 +1,83 @@
-function h=arrow(X,Y,Z,varargin)
-
-[color,varargin]=extract_option(varargin,'color',lines(1));
-[width,varargin]=extract_option(varargin,'width',0.1);
-[head_offset,varargin]=extract_option(varargin,'headoffset',width);
-[head_length,varargin]=extract_option(varargin,'headlength',15*width);
-[head_width,varargin]=extract_option(varargin,'headwidth',5*width);
-[line_style,varargin]=extract_option(varargin,'linestyle','-');
-
-
-dir1=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
-l=norm(dir1);
-dir1=dir1/l;
-
-
-
+classdef arrow3d<line3d
     
-hl=line3d([X(1),X(2)-(head_offset+head_length)*dir1(1)],[Y(1),Y(2)-(head_offset+head_length)*dir1(2)],[Z(1),Z(2)-(head_offset+head_length)*dir1(3)],...
-    'color',color,'width',width,'linestyle',line_style,varargin{:});
+    properties (AbortSet)
+        HeadOffset=0;
+        HeadLength=[];
+        HeadWidth=[];
+    end
     
-[X_head,Y_head,Z_head]=circle3d(X(2)-(head_offset+head_length)*dir1(1),Y(2)-(head_offset+head_length)*dir1(2),Z(2)-(head_offset+head_length)*dir1(3),dir1,head_width);
-hc=patch(X_head,Y_head,Z_head,color,'edgecolor','none',varargin{:});
-
-X_head(end+1)=X(2)-head_offset*dir1(1);
-Y_head(end+1)=Y(2)-head_offset*dir1(2);
-Z_head(end+1)=Z(2)-head_offset*dir1(3);
-
-hh=patch(X_head,Y_head,Z_head,color,'edgecolor','none',varargin{:});
-
-
+    methods
+        
+        function obj=arrow3d(X,Y,Z,varargin)
+            obj.type_store='arrow3d';
+            if nargin>0
+                set(obj.patch_group,'Tag','arrow3d','UserData',obj);
+                obj.XData=X;
+                obj.YData=Y;
+                obj.ZData=Z;
+                set(obj,varargin{:});
+                if isempty(obj.HeadLength)
+                    obj.HeadLength=10*obj.LineWidth;
+                end
+                if isempty(obj.HeadWidth)
+                    obj.HeadWidth=max(1/3*obj.HeadLength,2*obj.LineWidth);
+                end
+                obj.add_child(line3d());
+                obj.add_child(arrowhead3d());
+                obj.draw=true;
+            end
+        end
+        
+        function set.HeadOffset(obj,offset)
+            obj.HeadOffset=offset;
+            obj.redraw;
+        end
+        
+        function set.HeadLength(obj,length)
+            obj.HeadLength=length;
+            obj.redraw;
+        end
+        
+        function set.HeadWidth(obj,width)
+            obj.HeadWidth=width;
+            obj.redraw;
+        end
+    end
     
-
-   % h=arrow3d([verts(1,1),verts(2,1)],[verts(1,2),verts(2,2)],[verts(1,3),verts(2,3)],1-head_length/l,width,head_width,color);
-   % set(h,'FaceAlpha',alpha);
-%     verts(3,:)=verts(2,:)-head_length*dir1+(head_width+width)*dir2;
-%     verts(4,:)=verts(3,:)-head_width*dir2+0.3*head_length*dir1;
-%     
-%     h=patch('Vertices',verts,'Faces',[1,2,3,4],'FaceColor','flat','FaceVertexCData',repmat(color,4,1),'EdgeColor','none');
-    if nargout
-        h=[hl,hc,hh];
+    methods (Access = protected)
+        function redraw(obj)
+            if obj.draw_now
+                
+                X=obj.XData;
+                Y=obj.YData;
+                Z=obj.ZData;
+                
+                dir1=[X(end)-X(end-1),Y(end)-Y(end-1),Z(end)-Z(end-1)];
+                l=norm(dir1);
+                dir1=dir1/l;
+                
+                X_base=X(end)-(obj.HeadOffset+obj.HeadLength)*dir1(1);
+                Y_base=Y(end)-(obj.HeadOffset+obj.HeadLength)*dir1(2);
+                Z_base=Z(end)-(obj.HeadOffset+obj.HeadLength)*dir1(3);
+                
+                
+                set(obj.Children{1},'XData',[X(1:end-1),X_base],'YData',[Y(1:end-1),Y_base],...
+                    'ZData',[Z(1:end-1),Z_base],...
+                   'LineStyle',obj.LineStyle,'LineWidth',obj.LineWidth,'Alpha',obj.Alpha,...
+                   'Color',obj.Color);
+               if ~obj.Children{1}.draw
+                   obj.Children{1}.draw=true;
+               end
+               
+               X_tip=X(end)-obj.HeadOffset*dir1(1);
+                Y_tip=Y(end)-obj.HeadOffset*dir1(2);
+                Z_tip=Z(end)-obj.HeadOffset*dir1(3);
+               set(obj.Children{2},'XData',[X_base,X_tip],'YData',[Y_base,Y_tip],'ZData',[Z_base,Z_tip],...
+                   'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth);
+                if ~obj.Children{2}.draw
+                   obj.Children{2}.draw=true;
+               end
+            end
+        end
     end
 end

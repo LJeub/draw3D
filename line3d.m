@@ -1,165 +1,51 @@
-classdef line3d<matlab.mixin.SetGet
-    properties (Hidden,Access = private)
-        line_patch_group=hggroup('tag','line3d');
-        line_patches=[];
-        draw=false;
-    end
+classdef line3d<draw3d
     
     properties (AbortSet)
         LineStyle='-';
         LineWidth=0.1;
-        Color=lines(1);
-        Alpha=1;
-        Lighting='gouraud';
-        BackLighting='reverslit';
-        CDataMapping='scaled';
-        XData=[];
-        YData=[];
-        ZData=[];
     end
-    
-    properties
-        Tag='';
-    end
-    
-    properties (SetAccess = immutable)
-        Type='line3d';
-        Children=[];
-    end
-    
-    properties (Dependent)
-        Visible;
-        Clipping;
-        Annotation;
-        Parent;
-        HandleVisibility;
-    end
-    
     
     methods
         % constructor
         function obj=line3d(X,Y,Z,varargin)
-            %draw 3d line
-            set(obj,varargin{:});
-            set(obj.line_patches,'Parent',gca);
-            
-            obj.XData=X;
-            obj.YData=Y;
-            obj.ZData=Z;
-            obj.draw=true;
-            obj.draw_line;
+            obj.type_store='line3d';
+            if nargin>0
+                set(obj.patch_group,'Tag','line3d');
+                obj.XData=X;
+                obj.YData=Y;
+                obj.ZData=Z;
+                set(obj,varargin{:});
+                obj.draw=true;
+            end
         end
         
         function delete(obj)
-            delete(obj.line_patch_group);
+            delete(obj.patch_group);
         end
-        
-        
+                
         function set.LineStyle(obj,line_style)
             obj.LineStyle=line_style;
-            obj.draw_line;
+            obj.redraw;
         end
         
         function set.LineWidth(obj,line_width)
             obj.LineWidth=line_width;
-            obj.draw_line;
-        end
-        
-        function set.Color(obj,color)
-            obj.Color=color;
-            obj.update_patches('FaceColor',color);
-        end
-        
-        function set.Alpha(obj,alpha)
-            obj.Alpha=alpha;
-            obj.update_patches('FaceAlpha',alpha);
-        end
-        
-        function set.Lighting(obj,light)
-            obj.Lighting=light;
-            obj.update_patches('FaceLighting',light);
-        end
-        
-        function set.BackLighting(obj,light)
-            obj.BackLighting=light;
-            obj.update_patches('BackFaceLighting',light);
-        end
-        
-        function set.CDataMapping(obj,mapping)
-            obj.CDataMapping=mapping;
-            obj.update_patches('CDataMapping',mapping);
-        end
-        
-        function set.XData(obj,xdata)
-            obj.XData=xdata;
-            obj.draw_line;
-        end
-        
-        function set.YData(obj,ydata)
-            obj.YData=ydata;
-            obj.draw_line;
-        end
-        
-        function set.ZData(obj,zdata)
-            obj.ZData=zdata;
-            obj.draw_line;
-        end
-        
-        function set.Visible(obj,visible)
-            set(obj.line_patch_group,'Visible',visible);
-        end
-        
-        function visible=get.Visible(obj)
-            visible=get(obj.line_patch_group,'Visible');
-        end
-        
-        function set.Clipping(obj,clipping)
-            set(obj.line_patch_group,'Clipping',clipping);
-        end
-        
-        function clipping=get.Clipping(obj)
-            clipping=get(obj.line_patch_group,'Clipping');
-        end
-        
-        function set.Annotation(obj,annotation)
-            set(obj.line_patch_group,'Annotation',annotation);
-        end
-        
-        function annotation=get.Annotation(obj)
-            annotation=get(obj.line_patch_group,'Annotation');
-        end
-        
-        function set.Parent(obj,parent)
-            set(obj.line_patch_group,'Parent',parent);
-        end
-        
-        function parent=get.Parent(obj)
-            parent=get(obj.line_patch_group,'Parent');
-        end
-        
-        function set.HandleVisibility(obj,visibility)
-            set(obj.line_patch_group,'HandleVisibility',visibility);
-        end
-        
-        function visibility=get.HandleVisibility(obj)
-            visibility=get(obj.line_patch_group,'HandleVisibility');
+            obj.redraw;
         end
     end
     
-    methods (Access=private)
+    methods (Access=protected)
         %redraw
-        function draw_line(obj)
-            if obj.draw
-                delete(obj.line_patches);
+        function redraw(obj)
+            if obj.draw_now
+                delete(obj.patches);
                 X=obj.XData;
                 Y=obj.YData;
                 Z=obj.ZData;
                 width=obj.LineWidth;
                 
                 hs=[];
-                
-                nextplot=get(gca,'nextplot');
-                set(gca,'nextplot','add');
+
                 switch obj.LineStyle
                     
                     case '-'
@@ -178,8 +64,8 @@ classdef line3d<matlab.mixin.SetGet
                         
                         dir=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
                         [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(X(1),Y(1),Z(1),dir,width);
-                        hs(1)=patch(Xo(1,:),Yo(1,:),Zo(1,:),obj.Color);
-                        it=2;
+                        
+                        it=1;
                         Xstep=X(1);
                         Ystep=Y(1);
                         Zstep=Z(1);
@@ -188,6 +74,8 @@ classdef line3d<matlab.mixin.SetGet
                         dir=dir/distmax;
                         for i=1:length(X)-1
                             while dist<distmax
+                                hs(it)=patch(Xo(1,:),Yo(1,:),Zo(1,:),obj.Color);
+                                it=it+1;
                                 [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(Xstep+2*width*dir(1),Ystep+2*width*dir(2),Zstep+2*width*dir(3),dir,width);
                                 hs(it)=patch(Xo(2,:),Yo(2,:),Zo(2,:),obj.Color);
                                 it=it+1;
@@ -222,8 +110,6 @@ classdef line3d<matlab.mixin.SetGet
                                 Ystep=X(i+1)+dir(2)*(dist-distmax);
                                 Zstep=Z(i+1)+dir(3)*(dist-distmax);
                                 [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(Xstep,Ystep,Zstep,dir,width);
-                                hs(it)=patch(Xo(1,:),Yo(1,:),Zo(1,:),obj.Color);
-                                it=it+1;
                                 dist=(distmax-dist)+3*width;
                                 distmax=distmax_next;
                             else
@@ -244,18 +130,12 @@ classdef line3d<matlab.mixin.SetGet
                                 
                             end
                         end
-                        set(gca,'nextplot',nextplot);
                     otherwise
                         error('unknown linestyle: %s',linestyle);
                 end
-                set(hs,'Parent',obj.line_patch_group,'FaceAlpha',obj.Alpha,'EdgeColor','none','FaceColor',obj.Color);
-                obj.line_patches=hs;
-            end
-        end
-        
-        function update_patches(obj,property,value)
-            if obj.draw
-                set(obj.line_patches,property,value);
+                set(hs,'Parent',obj.patch_group);
+                set(hs,'FaceAlpha',obj.Alpha,'EdgeColor','none','FaceColor',obj.Color);
+                obj.patches=hs;
             end
         end
     end
