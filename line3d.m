@@ -64,30 +64,32 @@ classdef line3d<draw3d
                         
                         dir=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
                         [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(X(1),Y(1),Z(1),dir,width);
+                        dash=5*width;
+                        skip=5*width;
                         
                         it=1;
                         Xstep=X(1);
                         Ystep=Y(1);
                         Zstep=Z(1);
-                        dist=3*width;
+                        dist=dash+skip;
                         distmax=norm(dir);
                         dir=dir/distmax;
                         for i=1:length(X)-1
                             while dist<distmax
                                 hs(it)=patch(Xo(1,:),Yo(1,:),Zo(1,:),obj.Color);
                                 it=it+1;
-                                [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(Xstep+2*width*dir(1),Ystep+2*width*dir(2),Zstep+2*width*dir(3),dir,width);
+                                [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(Xstep+dash*dir(1),Ystep+dash*dir(2),Zstep+dash*dir(3),dir,width);
                                 hs(it)=patch(Xo(2,:),Yo(2,:),Zo(2,:),obj.Color);
                                 it=it+1;
                                 hs(it)=patch(surf2patch(Xo,Yo,Zo));
                                 it=it+1;
-                                Xstep=Xstep+3*width*dir(1);
-                                Ystep=Ystep+3*width*dir(2);
-                                Zstep=Zstep+3*width*dir(3);
+                                Xstep=Xstep+(dash+skip)*dir(1);
+                                Ystep=Ystep+(dash+skip)*dir(2);
+                                Zstep=Zstep+(dash+skip)*dir(3);
                                 [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(Xstep,Ystep,Zstep,dir,width);
                                 hs(it)=patch(Xo(1,:),Yo(1,:),Zo(1,:),obj.Color);
                                 it=it+1;
-                                dist=dist+3*width;
+                                dist=dist+dash+skip;
                             end
                             
                             if i<length(X)-1
@@ -99,8 +101,8 @@ classdef line3d<draw3d
                                 distmax_next=distmax;
                             end
                             
-                            if dist-width<distmax
-                                [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(Xstep+2*width*dir(1),Ystep+2*width*dir(2),Zstep+2*width*dir(3),dir,width);
+                            if dist-skip<distmax
+                                [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(Xstep+dash*dir(1),Ystep+dash*dir(2),Zstep+dash*dir(3),dir,width);
                                 hs(it)=patch(Xo(2,:),Yo(2,:),Zo(2,:),obj.Color);
                                 it=it+1;
                                 hs(it)=patch(surf2patch(Xo,Yo,Zo));
@@ -110,7 +112,7 @@ classdef line3d<draw3d
                                 Ystep=X(i+1)+dir(2)*(dist-distmax);
                                 Zstep=Z(i+1)+dir(3)*(dist-distmax);
                                 [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(Xstep,Ystep,Zstep,dir,width);
-                                dist=(distmax-dist)+3*width;
+                                dist=(distmax-dist)+dash+skip;
                                 distmax=distmax_next;
                             else
                                 [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(X(i+1),Y(i+1),Z(i+1),(dir+dir_next)/2,width);
@@ -122,9 +124,9 @@ classdef line3d<draw3d
                                 Yo(1,:)=Yo(2,:);
                                 Zo(1,:)=Zo(2,:);
                                 dir=dir_next;
-                                Xstep=X(i+1)+(dist-3*width-distmax)*dir(1);
-                                Ystep=Y(i+1)+(dist-3*width-distmax)*dir(2);
-                                Zstep=Z(i+1)+(dist-3*width-distmax)*dir(3);
+                                Xstep=X(i+1)+(dist-skip-dash-distmax)*dir(1);
+                                Ystep=Y(i+1)+(dist-skip-dash-distmax)*dir(2);
+                                Zstep=Z(i+1)+(dist-skip-dash-distmax)*dir(3);
                                 dist=(dist-distmax);
                                 distmax=distmax_next;
                                 
