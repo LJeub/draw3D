@@ -28,11 +28,13 @@ classdef draw3d<matlab.mixin.SetGet
     end
     
     properties (Dependent, SetAccess=immutable)
-     Type;
+        Type;
     end
     
     properties(Access=protected)
         type_store;
+        setting=false;
+        dirty=false;
     end
     
     properties (Dependent)
@@ -49,10 +51,24 @@ classdef draw3d<matlab.mixin.SetGet
             obj.patch_group=hggroup('Parent',gca,'UserData',obj);
             set(obj.patch_group,'DeleteFcn',@obj.delete_callback);
             if nargin>0
-               obj.XData=X;
-               obj.YData=Y;
-               obj.ZData=Z;
-               set(obj,varargin{:});
+                obj.XData=X;
+                obj.YData=Y;
+                obj.ZData=Z;
+                set(obj,varargin{:});
+            end
+        end
+        
+        function delete(obj)
+            delete(obj.patch_group);
+            obj.delete_children;
+        end
+        
+        function set(obj,varargin)
+            obj.setting=true;
+            set@matlab.mixin.SetGet(obj,varargin{:});
+            obj.setting=false;
+            if obj.dirty
+                obj.request_redraw;
             end
         end
         
@@ -63,15 +79,15 @@ classdef draw3d<matlab.mixin.SetGet
         function set.draw(obj,value)
             obj.draw=value;
             if value
-                obj.redraw;
+                obj.request_redraw;
             end
         end
         
-        function set.patches(obj,value)
-            obj.patches=value;
-            obj.add_patches;
+        function set.patches(obj,handles)
+            obj.patches=handles;
+            obj.set_patches();
         end
-                
+        
         function set.Color(obj,color)
             obj.Color=color;
             obj.update_patches('FaceColor',color);
@@ -99,17 +115,17 @@ classdef draw3d<matlab.mixin.SetGet
         
         function set.XData(obj,xdata)
             obj.XData=xdata;
-                obj.redraw;
+            obj.request_redraw;
         end
         
         function set.YData(obj,ydata)
             obj.YData=ydata;
-                obj.redraw;
+            obj.request_redraw;
         end
         
         function set.ZData(obj,zdata)
             obj.ZData=zdata;
-                obj.redraw;
+            obj.request_redraw;
         end
         
         function set.Parent(obj,parent)
@@ -169,26 +185,48 @@ classdef draw3d<matlab.mixin.SetGet
             child.Parent=obj;
         end
         
-        function add_patches(obj)
+        function add_patches(obj,h)
+            obj.patches=[obj.patches,h];
+        end
+        
+        function set_patches(obj)
             set(obj.patches,'Parent',obj.patch_group,'FaceColor',obj.Color,'FaceAlpha',obj.Alpha,...
                 'FaceLighting',obj.Lighting,'BackFaceLighting',obj.BackLighting,...
                 'CDataMapping',obj.CDataMapping,'EdgeColor','none');
+        end
+        
+        function options=get_base_options(obj)
+            options={'Color',obj.Color,'Alpha',obj.Alpha,'Lighting',obj.Lighting,...
+                'BackLighting',obj.BackLighting,'CDataMapping',obj.CDataMapping};
         end
         
         function delete_callback(obj,~,~)
             obj.delete();
         end
         
-        function comp=draw_now(obj)
-            comp=obj.draw&&~(isempty(obj.XData)||isempty(obj.YData)||isempty(obj.ZData));
+        function delete_children(obj)
+            for i=1:length(obj.Children)
+                delete(obj.Children{i});
+            end
+            obj.Children={};
         end
-
-        function redraw(obj)
+        
+        function comp=draw_now(obj)
+            comp=~obj.setting&&obj.draw&&~(isempty(obj.XData)||isempty(obj.YData)||isempty(obj.ZData));
+        end
+        
+        function request_redraw(obj)
             if obj.draw_now
-                % draw object (always check for draw_now)
+                obj.redraw
+                obj.dirty=false;
+            else
+                obj.dirty=true;
             end
         end
     end
-end
-        
     
+    methods (Access=protected, Abstract)
+        redraw(obj)
+    end
+end
+
