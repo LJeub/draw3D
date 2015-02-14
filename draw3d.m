@@ -1,7 +1,7 @@
 classdef draw3d<matlab.mixin.SetGet
     
     % draw3d base class
-    properties (Hidden,Access = {?line3d,?arrow3d,?arrowhead3d})
+    properties (Hidden,Access = protected)
         patch_group;
         patches=[];
     end
@@ -65,6 +65,11 @@ classdef draw3d<matlab.mixin.SetGet
             if value
                 obj.redraw;
             end
+        end
+        
+        function set.patches(obj,value)
+            obj.patches=value;
+            obj.add_patches;
         end
                 
         function set.Color(obj,color)
@@ -162,6 +167,12 @@ classdef draw3d<matlab.mixin.SetGet
         function add_child(obj,child)
             obj.Children{end+1}=child;
             child.Parent=obj;
+        end
+        
+        function add_patches(obj)
+            set(obj.patches,'Parent',obj.patch_group,'FaceColor',obj.Color,'FaceAlpha',obj.Alpha,...
+                'FaceLighting',obj.Lighting,'BackFaceLighting',obj.BackLighting,...
+                'CDataMapping',obj.CDataMapping,'EdgeColor','none');
         end
         
         function delete_callback(obj,~,~)
