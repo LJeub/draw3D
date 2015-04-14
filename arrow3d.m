@@ -62,9 +62,9 @@ classdef arrow3d<line3d
                 obj.Children{1}.draw=true;
             end
             
-            X_tip=X(end)-obj.HeadOffset*obj.LineWidth*dir1(1);
-            Y_tip=Y(end)-obj.HeadOffset*obj.LineWidth*dir1(2);
-            Z_tip=Z(end)-obj.HeadOffset*obj.LineWidth*dir1(3);
+            X_tip=X(end)-obj.HeadOffset*dir1(1);
+            Y_tip=Y(end)-obj.HeadOffset*dir1(2);
+            Z_tip=Z(end)-obj.HeadOffset*dir1(3);
             set(obj.Children{2},'XData',[X_base,X_tip],'YData',[Y_base,Y_tip],'ZData',[Z_base,Z_tip],...
                 'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth*obj.LineWidth);
             if ~obj.Children{2}.draw
