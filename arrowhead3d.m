@@ -33,7 +33,7 @@ classdef arrowhead3d<draw3d
             
             dir=[X(2)-X(1),Y(2)-Y(1),Z(2)-Z(1)];
             
-            [X_head,Y_head,Z_head]=circle3d(X(1),Y(1),Z(1),dir,obj.HeadWidth/2);
+            [X_head,Y_head,Z_head]=circle3d(X(1),Y(1),Z(1),dir,obj.HeadWidth/2,obj.AngularResolution);
             hc=patch(X_head,Y_head,Z_head,obj.Color);
             
             X_head(end+1)=X(2);
@@ -43,7 +43,6 @@ classdef arrowhead3d<draw3d
             hh=patch(X_head,Y_head,Z_head,obj.Color);
             
             obj.patches=[hc,hh];
-            set(obj.patches,'Parent',obj.patch_group,'FaceAlpha',obj.Alpha,'EdgeColor','none','FaceColor',obj.Color);
         end
     end
 end

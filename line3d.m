@@ -60,8 +60,8 @@ classdef line3d<draw3d
                 dir=[X(i+1)-X(i),Y(i+1)-Y(i),Z(i+1)-Z(i)];
                 if norm(dir)>obj.LineWidth/100
                     dir=dir/norm(dir);
-                    [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(X(i),Y(i),Z(i),dir,width);
-                    [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(X(i+1),Y(i+1),Z(i+1),dir,width);
+                    [Xo(1,:),Yo(1,:),Zo(1,:)]=circle3d(X(i),Y(i),Z(i),dir,width,obj.AngularResolution);
+                    [Xo(2,:),Yo(2,:),Zo(2,:)]=circle3d(X(i+1),Y(i+1),Z(i+1),dir,width,obj.AngularResolution);
                     obj.add_patches(patch(surf2patch(Xo,Yo,Zo)));
                     obj.add_child(sphere3d(X(i+1),Y(i+1),Z(i+1),'Radius',width,obj.get_base_options{:}));
                 end

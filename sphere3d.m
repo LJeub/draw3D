@@ -28,7 +28,7 @@ classdef sphere3d<draw3d
     methods (Access=protected)
         function redraw(obj)
             delete(obj.patches);
-            [X,Y,Z]=sphere(100);
+            [X,Y,Z]=sphere(obj.AngularResolution);
             X=X*obj.Radius;
             Y=Y*obj.Radius;
             Z=Z*obj.Radius;

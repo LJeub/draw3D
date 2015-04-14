@@ -15,6 +15,7 @@ classdef draw3d<matlab.mixin.SetGet
         XData=[];
         YData=[];
         ZData=[];
+        AngularResolution=30;
         draw=false;
     end
     
@@ -89,8 +90,13 @@ classdef draw3d<matlab.mixin.SetGet
         end
         
         function set.Color(obj,color)
+            if ischar(color)
+                cind=strncmpi(color,{'y','m','c','r','g','b','w','k'},1);
+                color_list=[1,1,0;1,0,1;0,1,1;1,0,0;0,1,0;0,0,1;1,1,1;0,0,0];
+                color=color_list(cind,:);
+            end
             obj.Color=color;
-            obj.update_patches('FaceColor',color);
+            obj.update_patches('FaceVertexCData',color);
         end
         
         function set.Alpha(obj,alpha)
@@ -190,14 +196,15 @@ classdef draw3d<matlab.mixin.SetGet
         end
         
         function set_patches(obj)
-            set(obj.patches,'Parent',obj.patch_group,'FaceColor',obj.Color,'FaceAlpha',obj.Alpha,...
+            set(obj.patches,'Parent',obj.patch_group,'FaceVertexCData',obj.Color,'FaceAlpha',obj.Alpha,...
                 'FaceLighting',obj.Lighting,'BackFaceLighting',obj.BackLighting,...
-                'CDataMapping',obj.CDataMapping,'EdgeColor','none');
+                'CDataMapping',obj.CDataMapping,'EdgeColor','none','FaceColor','flat');
         end
         
         function options=get_base_options(obj)
             options={'Color',obj.Color,'Alpha',obj.Alpha,'Lighting',obj.Lighting,...
-                'BackLighting',obj.BackLighting,'CDataMapping',obj.CDataMapping};
+                'BackLighting',obj.BackLighting,'CDataMapping',obj.CDataMapping,...
+                'AngularResolution',obj.AngularResolution};
         end
         
         function delete_callback(obj,~,~)
