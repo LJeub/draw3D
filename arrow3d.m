@@ -1,14 +1,22 @@
 classdef arrow3d<line3d
-    
+    % h=arrow3d(X,Y,Z,options)
+    % 
+    % draw 3-dimensional arrow from point [X(1),Y(1),Z(1)] to point
+    % [X(end),Y(end),Z(end)]. 
+    %
+    % See also: line3d, doublearrow3d
     properties (AbortSet)
-        HeadOffset=0;
-        HeadLength=5;
-        HeadWidth=3;
+        HeadOffset=0; % distance from the arrow tip to the end-point in data units
+        HeadLength=5; % length of arrow head as a multiple of LineWidth
+        HeadWidth=3; % width of arrow head as a multiple of LineWidth
     end
     
     methods
         
+        
         function obj=arrow3d(X,Y,Z,varargin)
+            % draw 3-dimensional arrow from point [X(1),Y(1),Z(1)] to point [X(end),Y(end),Z(end)]. 
+             
             obj.type_store='arrow3d';
             if nargin>0
                 set(obj.patch_group,'Tag','arrow3d','UserData',obj);
@@ -38,7 +46,7 @@ classdef arrow3d<line3d
         end
     end
     
-    methods (Access = protected)
+    methods (Hidden,Access = protected)
         function redraw(obj)
             
             X=obj.XData;

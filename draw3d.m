@@ -1,49 +1,46 @@
 classdef draw3d<matlab.mixin.SetGet
+    % abstract draw3d base class
     
-    % draw3d base class
     properties (Hidden,Access = protected)
         patch_group;
         patches=[];
-    end
-    
-    properties (AbortSet)
-        Color=lines(1);
-        Alpha=1;
-        Lighting='gouraud';
-        BackLighting='reverselit';
-        CDataMapping='scaled';
-        XData=[];
-        YData=[];
-        ZData=[];
-        AngularResolution=30;
-        draw=false;
-    end
-    
-    properties
-        Tag='';
-    end
-    
-    properties (SetAccess = protected)
-        Children={};
-        Parent=[];
-    end
-    
-    properties (Dependent, SetAccess=immutable)
-        Type;
-    end
-    
-    properties(Access=protected)
         type_store;
         setting=false;
         dirty=false;
     end
     
+    properties (AbortSet)
+        Color=lines(1); % color for patches (default: lines(1))
+        Alpha=1; % transparency value for patches (default: 1)
+        Lighting='gouraud'; % lighting style (default: 'gouraud')
+        BackLighting='reverselit'; % backlighting style (default: 'reverselit')
+        CDataMapping='scaled'; % color data mapping (default: 'scaled')
+        XData=[]; % x-coordinates of plot points
+        YData=[]; % y-coordinates of plot points
+        ZData=[]; % z-coordinates of plot points
+        AngularResolution=30; % number of points in circles or spheres (default: 30)
+        draw=false; % toggle drawing of object on or off (set to true after construction)
+    end
+    
+    properties
+        Tag=''; 
+    end
+    
+    properties (SetAccess = protected)
+        Children={}; % cell array of handles to child objects in draw tree
+        Parent=[]; % handle to parent in draw tree
+    end
+    
+    properties (Dependent, SetAccess=immutable)
+        Type; 
+    end
+    
     properties (Dependent)
-        Visible;
-        Clipping;
-        Annotation;
+        Visible; % object visibility in figure
+        Clipping; % toggle object clipping
+        Annotation; % annotation object
         
-        HandleVisibility;
+        HandleVisibility; % handle visibility of object
     end
     
     methods
@@ -134,6 +131,11 @@ classdef draw3d<matlab.mixin.SetGet
             obj.request_redraw;
         end
         
+        function set.AngularResolution(obj,resolution)
+            obj.AngularResolution=resolution;
+            obj.request_redraw;
+        end
+        
         function set.Parent(obj,parent)
             obj.Parent=parent;
             obj.add_parent(parent);
@@ -172,7 +174,7 @@ classdef draw3d<matlab.mixin.SetGet
         end
     end
     
-    methods (Access=protected)
+    methods (Hidden,Access=protected)
         function update_patches(obj,property,value)
             if obj.draw
                 set(obj.patches,property,value);
@@ -232,7 +234,7 @@ classdef draw3d<matlab.mixin.SetGet
         end
     end
     
-    methods (Access=protected, Abstract)
+    methods (Hidden,Access=protected, Abstract)
         redraw(obj)
     end
 end

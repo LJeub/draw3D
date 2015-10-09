@@ -1,8 +1,15 @@
 classdef doublearrow3d<arrow3d
+    % h=doublearrow3d(X,Y,Z,options)
+    % 
+    % draw 3-dimensional double arrow between points [X(1),Y(1),Z(1)] and
+    % [X(end),Y(end),Z(end)]. 
+    %
+    % See also: line3d, arrow3d
     
     methods
         
         function obj=doublearrow3d(X,Y,Z,varargin)
+            % draw 3-dimensional double arrow between points [X(1),Y(1),Z(1)] and [X(end),Y(end),Z(end)]. 
             obj.type_store='doublearrow3d';
             if nargin>0
                 set(obj.patch_group,'Tag','doublearrow3d');
@@ -19,7 +26,7 @@ classdef doublearrow3d<arrow3d
         
     end
     
-    methods (Access = protected)
+    methods (Hidden,Access = protected)
         function redraw(obj)
             X=obj.XData;
             Y=obj.YData;

@@ -1,4 +1,9 @@
 function [X,Y,Z]=circle3d(X,Y,Z,normal,radius,resolution)
+% [X, Y, Z] = circle3d(X, Y, Z, normal, radius, resolution)
+%
+% Coordinates for a circle in 3d space with centre [X,Y,Z] in plane with
+% normal vector `normal'. Returns `resolution' number of points.
+
 normal=normal/norm(normal);
 
 ndir=[normal(2),-normal(1),0];

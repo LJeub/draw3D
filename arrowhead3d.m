@@ -1,12 +1,17 @@
 classdef arrowhead3d<draw3d
-    
+    % h=arrowhead3d(X,Y,Z,options)
+    %
+    % draw arrowhead (a cone) from [X(1),Y(1),Z(1)] to [X(2),Y(2),Z(2)]
+    %
+    % See also: arrow3d, doublearrow3d, draw3d
     
     properties (AbortSet)
-        HeadWidth=0.5;
+        HeadWidth=0.5; % diameter of base of cone in data units
     end
     
     methods
         function obj=arrowhead3d(X,Y,Z,varargin)
+            %draw arrowhead (a cone) from [X(1),Y(1),Z(1)] to [X(2),Y(2),Z(2)]
             obj.type_store='arrowhead3d';
             if nargin>0
                 set(obj.patch_group,'Tag','arrowhead3d','UserData',obj);
@@ -24,7 +29,7 @@ classdef arrowhead3d<draw3d
         end
     end
     
-    methods (Access=protected)
+    methods (Hidden,Access=protected)
         function redraw(obj)
             delete(obj.patches);
             X=obj.XData;

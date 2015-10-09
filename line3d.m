@@ -1,13 +1,17 @@
 classdef line3d<draw3d
+    %  h = line3d(X,Y,Z,options)
+    %
+    % draw a 3-dimensional line between points
     
     properties (AbortSet)
-        LineStyle='-';
-        LineWidth=0.1;
+        LineStyle='-'; % line style: '-' (default), '--', ':'
+        LineWidth=0.1; % line width in data units
     end
     
     methods
         % constructor
         function obj=line3d(X,Y,Z,varargin)
+            % draw a 3-dimensional line between points
             obj.type_store='line3d';
             if nargin>0
                 set(obj.patch_group,'Tag','line3d');
@@ -30,7 +34,7 @@ classdef line3d<draw3d
         end
     end
     
-    methods (Access=protected)
+    methods (Hidden,Access=protected)
         %redraw
         function redraw(obj)
             delete(obj.patches);

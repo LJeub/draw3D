@@ -1,12 +1,16 @@
 classdef sphere3d<draw3d
+    % h = sphere3d(X, Y, Z, options)
+    %
+    % draw a sphere
     
     properties (AbortSet)
-        Radius=1;
+        Radius=1; % radius of sphere in data units
     end
     
     
     methods
         function obj=sphere3d(X,Y,Z,varargin)
+            % draw a sphere with centre [X,Y,Z]
             if nargin>0
                 set(obj.patch_group,'Tag','sphere3d')
                 obj.XData=X;
@@ -25,7 +29,7 @@ classdef sphere3d<draw3d
             obj.request_redraw;
         end
     end
-    methods (Access=protected)
+    methods (Hidden,Access=protected)
         function redraw(obj)
             delete(obj.patches);
             [X,Y,Z]=sphere(obj.AngularResolution);
