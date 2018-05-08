@@ -36,9 +36,9 @@ classdef doublearrow3d<arrow3d
             l=norm(dir1);
             dir1=dir1/l;
             
-            X_base=X(1)+(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(1);
-            Y_base=Y(1)+(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(2);
-            Z_base=Z(1)+(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(3);
+            X_base=X(1)+(obj.HeadOffset+obj.HeadLength)*dir1(1);
+            Y_base=Y(1)+(obj.HeadOffset+obj.HeadLength)*dir1(2);
+            Z_base=Z(1)+(obj.HeadOffset+obj.HeadLength)*dir1(3);
             
             
             X_tip=X(1)+obj.HeadOffset*dir1(1);
@@ -46,7 +46,7 @@ classdef doublearrow3d<arrow3d
             Z_tip=Z(1)+obj.HeadOffset*dir1(3);
             
             set(obj.Children{1},'XData',[X_base,X_tip],'YData',[Y_base,Y_tip],'ZData',[Z_base,Z_tip],...
-                'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth*obj.LineWidth);
+                'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth);
             if ~obj.Children{1}.draw
                 obj.Children{1}.draw=true;
             end
@@ -56,9 +56,9 @@ classdef doublearrow3d<arrow3d
             l=norm(dir1);
             dir1=dir1/l;
             
-            X_base2=X(end)-(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(1);
-            Y_base2=Y(end)-(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(2);
-            Z_base2=Z(end)-(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(3);
+            X_base2=X(end)-(obj.HeadOffset+obj.HeadLength)*dir1(1);
+            Y_base2=Y(end)-(obj.HeadOffset+obj.HeadLength)*dir1(2);
+            Z_base2=Z(end)-(obj.HeadOffset+obj.HeadLength)*dir1(3);
             
             set(obj.Children{2},'XData',[X_base,X(2:end-1),X_base2],'YData',[Y_base,Y(2:end-1),Y_base2],...
                 'ZData',[Z_base,Z(2:end-1),Z_base2],...
@@ -72,7 +72,7 @@ classdef doublearrow3d<arrow3d
             Y_tip=Y(end)-obj.HeadOffset*dir1(2);
             Z_tip=Z(end)-obj.HeadOffset*dir1(3);
             set(obj.Children{3},'XData',[X_base2,X_tip],'YData',[Y_base2,Y_tip],'ZData',[Z_base2,Z_tip],...
-                'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth*obj.LineWidth);
+                'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth);
             if ~obj.Children{3}.draw
                 obj.Children{3}.draw=true;
             end

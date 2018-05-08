@@ -7,8 +7,8 @@ classdef arrow3d<line3d
     % See also: line3d, doublearrow3d
     properties (AbortSet)
         HeadOffset=0; % distance from the arrow tip to the end-point in data units
-        HeadLength=5; % length of arrow head as a multiple of LineWidth
-        HeadWidth=3; % width of arrow head as a multiple of LineWidth
+        HeadLength=5; % length of arrow head in data units
+        HeadWidth=3; % width of arrow head in data units
     end
     
     methods
@@ -57,9 +57,9 @@ classdef arrow3d<line3d
             l=norm(dir1);
             dir1=dir1/l;
             
-            X_base=X(end)-(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(1);
-            Y_base=Y(end)-(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(2);
-            Z_base=Z(end)-(obj.HeadOffset+obj.HeadLength*obj.LineWidth)*dir1(3);
+            X_base=X(end)-(obj.HeadOffset+obj.HeadLength)*dir1(1);
+            Y_base=Y(end)-(obj.HeadOffset+obj.HeadLength)*dir1(2);
+            Z_base=Z(end)-(obj.HeadOffset+obj.HeadLength)*dir1(3);
             
             
             set(obj.Children{1},'XData',[X(1:end-1),X_base],'YData',[Y(1:end-1),Y_base],...
@@ -74,7 +74,7 @@ classdef arrow3d<line3d
             Y_tip=Y(end)-obj.HeadOffset*dir1(2);
             Z_tip=Z(end)-obj.HeadOffset*dir1(3);
             set(obj.Children{2},'XData',[X_base,X_tip],'YData',[Y_base,Y_tip],'ZData',[Z_base,Z_tip],...
-                'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',obj.HeadWidth*obj.LineWidth);
+                'Color',obj.Color,'Alpha',obj.Alpha,'HeadWidth',max(obj.HeadWidth,obj.LineWidth));
             if ~obj.Children{2}.draw
                 obj.Children{2}.draw=true;
             end
