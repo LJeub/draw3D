@@ -41,12 +41,16 @@ classdef arrowhead3d<draw3d
             [X_head,Y_head,Z_head]=circle3d(X(1),Y(1),Z(1),dir,obj.HeadWidth/2,obj.AngularResolution);
             hc=patch(X_head,Y_head,Z_head,obj.Color);
             
-            X_head(end+1)=X(2);
-            Y_head(end+1)=Y(2);
-            Z_head(end+1)=Z(2);
+            X_head(end)=X(2);
+            Y_head(end)=Y(2);
+            Z_head(end)=Z(2);
             
-            hh=patch(X_head,Y_head,Z_head,obj.Color);
-            
+            if length(X_head)==3
+                faces=[1,2,3];
+            else
+                faces=[(1:length(X_head)-1)',[2:length(X_head)-1,1]',repmat(length(X_head),length(X_head)-1,1)];
+            end
+            hh=patch('Vertices',[X_head(:),Y_head(:),Z_head(:)],'Faces',faces);
             obj.patches=[hc,hh];
         end
     end

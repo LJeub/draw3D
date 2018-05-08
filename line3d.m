@@ -6,6 +6,7 @@ classdef line3d<draw3d
     properties (AbortSet)
         LineStyle='-'; % line style: '-' (default), '--', ':'
         LineWidth=0.1; % line width in data units
+        LineCap=true; % terminate line with sphere
     end
     
     methods
@@ -55,6 +56,13 @@ classdef line3d<draw3d
                     error('unknown LineStyle: %s',obj.LineStyle);
                     
             end
+            if ~obj.LineCap
+                delete(obj.Children{1});
+                obj.Children(1)=[];
+                delete(obj.Children{end});
+                obj.Children(end)=[];
+            end
+                
         end
         
         function draw_line(obj,X,Y,Z)

@@ -5,15 +5,21 @@ function [X,Y,Z]=circle3d(X,Y,Z,normal,radius,resolution)
 % normal vector `normal'. Returns `resolution' number of points.
 
 normal=normal/norm(normal);
-
-ndir=[normal(2),-normal(1),0];
-ndir=ndir/norm(ndir)*radius;
-ndir2=cross(normal,ndir);
-ndir2=ndir2/norm(ndir2)*radius;
-t_list=(1:resolution)*2*pi/resolution;
-
-X=X+cos(t_list).*ndir(1)+sin(t_list).*ndir2(1);
-Y=Y+cos(t_list).*ndir(2)+sin(t_list).*ndir2(2);
-Z=Z+cos(t_list).*ndir(3)+sin(t_list).*ndir2(3);
+accuracy = 10^-14;
+if normal(1)==0 && normal(2)==0
+    ndir=[1,0,0]*radius;
+    ndir2=[0,1,0]*radius;
+else
+    ndir=[normal(2),-normal(1),0];
+    ndir=ndir/norm(ndir)*radius;
+    ndir2=cross(normal,ndir);
+    ndir2=ndir2/norm(ndir2)*radius;
+end
+t_list=(0:resolution)*2*pi/resolution;
+coslist=round(cos(t_list)/accuracy)*accuracy;
+sinlist=round(sin(t_list)/accuracy)*accuracy;
+X=X+coslist.*ndir(1)+sinlist.*ndir2(1);
+Y=Y+coslist.*ndir(2)+sinlist.*ndir2(2);
+Z=Z+coslist.*ndir(3)+sinlist.*ndir2(3);
 
 end

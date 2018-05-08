@@ -47,24 +47,40 @@ classdef arrow3d<line3d
     end
     
     methods (Hidden,Access = protected)
+        function [dir, skip]=head_dir_skip(obj, X, Y, Z)
+            % determine arrow head direction
+            if nargin <2
+                X=obj.XData;
+                Y=obj.YData;
+                Z=obj.ZData;
+            end
+            skip=1;
+            dir=[X(end)-X(end-1),Y(end)-Y(end-1),Z(end)-Z(end-1)];
+            l=norm(dir);
+            while l<(obj.HeadOffset+obj.HeadLength) && skip<length(X)-1
+                skip=skip+1;
+                dir=[X(end)-X(end-skip),Y(end)-Y(end-skip), Z(end)-Z(end-skip)];
+                l=norm(dir);
+            end
+            dir=dir/l;  
+        end
+        
         function redraw(obj)
             
             X=obj.XData;
             Y=obj.YData;
             Z=obj.ZData;
             
-            dir1=[X(end)-X(end-1),Y(end)-Y(end-1),Z(end)-Z(end-1)];
-            l=norm(dir1);
-            dir1=dir1/l;
-            
+
+            [dir1, dir_skip]=obj.head_dir_skip();
             X_base=X(end)-(obj.HeadOffset+obj.HeadLength)*dir1(1);
             Y_base=Y(end)-(obj.HeadOffset+obj.HeadLength)*dir1(2);
             Z_base=Z(end)-(obj.HeadOffset+obj.HeadLength)*dir1(3);
             
             
-            set(obj.Children{1},'XData',[X(1:end-1),X_base],'YData',[Y(1:end-1),Y_base],...
-                'ZData',[Z(1:end-1),Z_base],...
-                'LineStyle',obj.LineStyle,'LineWidth',obj.LineWidth,'Alpha',obj.Alpha,...
+            set(obj.Children{1},'XData',[X(1:end-dir_skip),X_base],'YData',[Y(1:end-dir_skip),Y_base],...
+                'ZData',[Z(1:end-dir_skip),Z_base],...
+                'LineCap',false,'LineStyle',obj.LineStyle,'LineWidth',obj.LineWidth,'Alpha',obj.Alpha,...
                 'Color',obj.Color);
             if ~obj.Children{1}.draw
                 obj.Children{1}.draw=true;

@@ -32,12 +32,22 @@ classdef sphere3d<draw3d
     methods (Hidden,Access=protected)
         function redraw(obj)
             delete(obj.patches);
-            [X,Y,Z]=sphere(obj.AngularResolution);
-            X=X*obj.Radius;
-            Y=Y*obj.Radius;
-            Z=Z*obj.Radius;
-            
+            if obj.AngularResolution>2
+            n=obj.AngularResolution;
+            theta = (-n:2:n)/n*pi;
+            phi = (-n:2:n)'/n*pi/2;
+            cosphi = cos(phi); cosphi(1) = 0; cosphi(n+1) = 0;
+            sintheta = sin(theta); sintheta(1) = 0; sintheta(n+1) = 0;
+
+            X=cosphi*cos(theta)*obj.Radius;
+            Y=sin(phi)*ones(1,n+1)*obj.Radius;
+            Z=cosphi*sintheta*obj.Radius;
             h=patch(surf2patch(X+obj.XData,Y+obj.YData,Z+obj.ZData),'EdgeColor','none');
+            else
+                [X,Y,Z]=circle3d(obj.XData,obj.YData,obj.ZData,[0,0,1],obj.Radius,100);
+                h=patch(X,Y,Z);
+            end
+            
             obj.patches=h;
         end
     end
