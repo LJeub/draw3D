@@ -6,10 +6,10 @@ classdef arrow3d<line3d
     %
     % See also: line3d, doublearrow3d
     
-    % Version:
-    % Date:
-    % Author:
-    % Email:
+% Version:
+% Date:
+% Author:
+% Email:
     
     properties (AbortSet)
         HeadOffset=0; % distance from the arrow tip to the end-point in data units

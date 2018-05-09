@@ -6,10 +6,10 @@ classdef doublearrow3d<arrow3d
     %
     % See also: line3d, arrow3d
         
-    % Version:
-    % Date:
-    % Author:
-    % Email:
+% Version:
+% Date:
+% Author:
+% Email:
     
     methods
         
