@@ -13,8 +13,8 @@ classdef arrow3d<line3d
     
     properties (AbortSet)
         HeadOffset=0; % distance from the arrow tip to the end-point in data units
-        HeadLength=5; % length of arrow head in data units
-        HeadWidth=3; % width of arrow head in data units
+        HeadLength=[]; % length of arrow head in data units
+        HeadWidth=[]; % width of arrow head in data units
     end
     
     methods
@@ -46,9 +46,25 @@ classdef arrow3d<line3d
             obj.request_redraw;
         end
         
+        function length=get.HeadLength(obj)
+            if isempty(obj.HeadLength)
+                length=5*obj.LineWidth;
+            else
+                length=obj.HeadLength;
+            end
+        end
+                
         function set.HeadWidth(obj,width)
             obj.HeadWidth=width;
             obj.request_redraw;
+        end
+        
+        function width=get.HeadWidth(obj)
+            if isempty(obj.HeadWidth)
+                width=3*obj.LineWidth;
+            else
+                width=obj.HeadWidth;
+            end
         end
     end
     
