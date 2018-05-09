@@ -69,17 +69,20 @@ classdef arrow3d<line3d
     end
     
     methods (Hidden,Access = protected)
-        function [dir, skip]=head_dir_skip(obj, X, Y, Z)
+        function [dir, skip]=head_dir_skip(obj, X, Y, Z, offset)
             % determine arrow head direction
             if nargin <2
                 X=obj.XData;
                 Y=obj.YData;
                 Z=obj.ZData;
             end
+            if nargin<5
+                offset=obj.HeadOffset;
+            end
             skip=1;
             dir=[X(end)-X(end-1),Y(end)-Y(end-1),Z(end)-Z(end-1)];
             l=norm(dir);
-            while l<(obj.HeadOffset+obj.HeadLength) && skip<length(X)-1
+            while l<(offset+obj.HeadLength) && skip<length(X)-1
                 skip=skip+1;
                 dir=[X(end)-X(end-skip),Y(end)-Y(end-skip), Z(end)-Z(end-skip)];
                 l=norm(dir);
