@@ -5,10 +5,10 @@ classdef arrowhead3d<draw3d
     %
     % See also: arrow3d, doublearrow3d, draw3d
         
-% Version:
-% Date:
-% Author:
-% Email:
+% Version: 1.0
+% Date: Wed  9 May 2018 14:22:01 CEST
+% Author: Lucas Jeub
+% Email: ljeub@iu.edu
     
     properties (AbortSet)
         HeadWidth=0.5; % diameter of base of cone in data units

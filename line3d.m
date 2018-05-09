@@ -3,10 +3,10 @@ classdef line3d<draw3d
     %
     % draw a 3-dimensional line between points
         
-% Version:
-% Date:
-% Author:
-% Email:
+% Version: 1.0
+% Date: Wed  9 May 2018 14:22:01 CEST
+% Author: Lucas Jeub
+% Email: ljeub@iu.edu
     
     properties (AbortSet)
         LineStyle='-'; % line style: '-' (default), '--', ':'

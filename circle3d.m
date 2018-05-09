@@ -4,10 +4,10 @@ function [X,Y,Z]=circle3d(X,Y,Z,normal,radius,resolution)
 % Coordinates for a circle in 3d space with centre [X,Y,Z] in plane with
 % normal vector `normal'. Returns `resolution' number of points.
 
-% Version:
-% Date:
-% Author:
-% Email:
+% Version: 1.0
+% Date: Wed  9 May 2018 14:22:01 CEST
+% Author: Lucas Jeub
+% Email: ljeub@iu.edu
 
 normal=normal/norm(normal);
 accuracy = 10^-14;
