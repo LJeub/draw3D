@@ -1,5 +1,10 @@
 classdef draw3d<matlab.mixin.SetGet
     % abstract draw3d base class
+        
+    % Version:
+    % Date:
+    % Author:
+    % Email:
     
     properties (Hidden,Access = protected)
         patch_group;

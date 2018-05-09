@@ -4,6 +4,11 @@ classdef arrowhead3d<draw3d
     % draw arrowhead (a cone) from [X(1),Y(1),Z(1)] to [X(2),Y(2),Z(2)]
     %
     % See also: arrow3d, doublearrow3d, draw3d
+        
+    % Version:
+    % Date:
+    % Author:
+    % Email:
     
     properties (AbortSet)
         HeadWidth=0.5; % diameter of base of cone in data units

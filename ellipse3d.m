@@ -4,6 +4,11 @@ function [X,Y,Z]=ellipse3d(X,Y,Z,axis1,axis2, resolution)
 % Coordinates for an ellipse in 3d space with centre [X,Y,Z] and
 % axes `axis1' and 'axis2'.
 % Returns `resolution' number of points.
+
+% Version:
+% Date:
+% Author:
+% Email:
     
 t_list=(0:resolution)*2*pi/resolution;
 

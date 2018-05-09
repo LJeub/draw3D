@@ -2,6 +2,11 @@ classdef line3d<draw3d
     %  h = line3d(X,Y,Z,options)
     %
     % draw a 3-dimensional line between points
+        
+    % Version:
+    % Date:
+    % Author:
+    % Email:
     
     properties (AbortSet)
         LineStyle='-'; % line style: '-' (default), '--', ':'

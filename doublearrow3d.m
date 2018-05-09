@@ -5,6 +5,11 @@ classdef doublearrow3d<arrow3d
     % [X(end),Y(end),Z(end)]. 
     %
     % See also: line3d, arrow3d
+        
+    % Version:
+    % Date:
+    % Author:
+    % Email:
     
     methods
         

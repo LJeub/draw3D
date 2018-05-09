@@ -2,6 +2,11 @@ classdef sphere3d<draw3d
     % h = sphere3d(X, Y, Z, options)
     %
     % draw a sphere
+        
+    % Version:
+    % Date:
+    % Author:
+    % Email:
     
     properties (AbortSet)
         Radius=1; % radius of sphere in data units
