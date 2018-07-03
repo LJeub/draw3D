@@ -3,10 +3,10 @@ classdef sphere3d<draw3d
     %
     % draw a sphere
         
-% Version: 1.0
-% Date: Wed  9 May 2018 14:22:01 CEST
+% Version: 1.0.1
+% Date: Tue  3 Jul 2018 12:50:17 CEST
 % Author: Lucas Jeub
-% Email: ljeub@iu.edu
+% Email: lucasjeub@gmail.com
     
     properties (AbortSet)
         Radius=1; % radius of sphere in data units
